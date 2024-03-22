@@ -1,7 +1,6 @@
 
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
+import pinia from './stores'
 import App from '@/App.vue'
 import router from './router'
 import ElementPlus from 'element-plus'
@@ -11,11 +10,12 @@ import 'virtual:svg-icons-register'
 //配置elment-plus国际化
 //@ts-ignore
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
+import Particles from 'particles.vue3'
 
 
 const app= createApp(App)
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.use(ElementPlus, {
     locale: zhCn,
@@ -27,6 +27,7 @@ app.use(ElementPlus, {
 import globalComponent from '@/components'
 //安装自定义组件
 app.use(globalComponent)
+app.use(Particles)
 
 //引入模板的全局样式
 import'@/styles/index.scss'

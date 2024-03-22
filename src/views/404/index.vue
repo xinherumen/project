@@ -5,7 +5,7 @@
 
 <template>
   <div>
-    <h1>你好帅呀</h1>
+    <h1>404</h1>
   </div>
 </template>
 
