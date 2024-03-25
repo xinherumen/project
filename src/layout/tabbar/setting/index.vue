@@ -28,7 +28,7 @@
         </span>
         <template #dropdown>
             <el-dropdown-menu>
-                <el-dropdown-item @click="">退出登录</el-dropdown-item>
+                <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
         </template>
     </el-dropdown>
@@ -36,6 +36,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { ElNotification } from 'element-plus';
 import { useRouter, useRoute } from 'vue-router';
 //获取用户相关的小仓库
 import useUserStore from '@/stores/modules/user';
@@ -67,15 +68,21 @@ const fullScreen = () => {
     }
 }
 //退出登录点击回调
-// const logout = async () => {
-//     //第一件事情:需要向服务器发请求[退出登录接口]******
-//     //第二件事情:仓库当中关于用于相关的数据清空[token|username|avatar]
-//     //第三件事情:跳转到登录页面
-//     await userStore.userLogout();
-//     //跳转到登录页面
-//     $router.push({ path: '/login', query: { redirect: $route.path } });
-
-// }
+const logout = async () => {
+    //第一件事情:需要向服务器发请求[退出登录接口]******
+    //第二件事情:仓库当中关于用于相关的数据清空[token|username|avatar]
+    //第三件事情:跳转到登录页面
+    try{
+    await userStore.userLogout();
+    //跳转到登录页面
+    $router.push({ path: '/login', query: { redirect: $route.path } });
+}catch(error){
+    ElNotification({
+      type:'error',
+      message:(error as Error).message
+    })
+}
+}
 
 //颜色组件组件的数据
 const color = ref('rgba(255, 69, 0, 0.68)')

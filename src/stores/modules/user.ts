@@ -1,7 +1,7 @@
 //创建用户相关的小仓库
 import { defineStore } from 'pinia'
 //引入接口
-import { reqLogin,reqUserInfo } from '@/api/seeker'
+import { reqLogin,reqUserInfo,reqLogout } from '@/api/seeker'
 import type {
   loginForm,
   loginResponseData,
@@ -9,25 +9,10 @@ import type {
 } from '@/api/seeker/type'
 import type { UserState } from './types/type'
 //引入操作本地存储的工具方法
-import { SET_TOKEN, GET_TOKEN } from '@/utils/token'
+import { SET_TOKEN, GET_TOKEN,REMOVE_TOKEN } from '@/utils/token'
 //引入路由(常量路由)
 import { constantRouter } from '@/router/router'
 
-//引入深拷贝方法
-// @ts-expect-error
-// import cloneDeep from 'lodash/cloneDeep'
-// import router from '@/router'
-//用于过滤当前用户需要展示的异步路由
-// function filterAsyncRoute(asnycRoute: any, routes: any) {
-//   return asnycRoute.filter((item: any) => {
-//     if (routes.includes(item.name)) {
-//       if (item.children && item.children.length > 0) {
-//         item.children = filterAsyncRoute(item.children, routes)
-//       }
-//       return true
-//     }
-//   })
-// }
 
 //创建用户小仓库
 const useUserStore = defineStore('User', {
@@ -37,7 +22,7 @@ const useUserStore = defineStore('User', {
       token: GET_TOKEN(), //用户唯一标识token
       menuRoutes: constantRouter, //仓库存储生成菜单需要数组(路由)
       username: '',
-      avatar: '',
+      avatar: '/public/logo.png',
       //存储当前用户是否包含某一个按钮
       // buttons: [],
     }
@@ -70,38 +55,26 @@ const useUserStore = defineStore('User', {
       if (result.code == 100) {
         this.username = result.data.name
         this.avatar = result.data.avatar
-        // this.buttons = result.data.buttons
-        //计算当前用户需要展示的异步路由
-        // const userAsyncRoute = filterAsyncRoute(
-        //   cloneDeep(asnycRoute),
-        //   result.data.routes,
-        // )
-        //菜单需要的数据整理完毕
-        // this.menuRoutes = [...constantRoute, ...userAsyncRoute, anyRoute]
-        //目前路由器管理的只有常量路由:用户计算完毕异步路由、任意路由动态追加
-      //   ;[...userAsyncRoute, anyRoute].forEach((route: any) => {
-      //     router.addRoute(route)
-      //   })
         return 'ok'
       } else {
         return Promise.reject(new Error(result.msg))
       }
     },
-    //退出登录
-    // async userLogout() {
-    //   //退出登录请求
-    //   const result: any = await reqLogout()
-    //   if (result.code == 200) {
-    //     //目前没有mock接口:退出登录接口(通知服务器本地用户唯一标识失效)
-    //     this.token = ''
-    //     this.username = ''
-    //     this.avatar = ''
-    //     REMOVE_TOKEN()
-    //     return 'ok'
-    //   } else {
-    //     return Promise.reject(new Error(result.message))
-    //   }
-    // },
+    // 退出登录
+    async userLogout() {
+      //退出登录请求
+      const result: any = await reqLogout()
+      if (result.code == 100) {
+        //目前没有mock接口:退出登录接口(通知服务器本地用户唯一标识失效)
+        this.token = ''
+        this.username = ''
+        this.avatar = '/public/logo.png'
+        REMOVE_TOKEN()
+        return 'ok'
+      } else {
+        return Promise.reject(new Error(result.message))
+      }
+    },
   },
   getters: {},
 })

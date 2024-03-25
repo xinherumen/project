@@ -9,7 +9,7 @@
     </div>
   </el-card>
   <div class="bottoms">
-    <svg-icon name="welcome" width="600px" height="300px"></svg-icon>
+    <svg-icon name="welcome" width="800px" height="400px"></svg-icon>
   </div>
 </template>
 

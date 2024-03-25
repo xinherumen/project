@@ -14,8 +14,8 @@ export const constantRouter=[
     name: 'layout',
     component: ()=>import ('@/layout/index.vue'),
     meta:{
-      title:'',
-      hidden: false,
+      title:'layout',
+      hidden: true,
       icon:""
     },
     redirect: '/home',
@@ -30,13 +30,12 @@ export const constantRouter=[
           icon:"Promotion"
         }
       },
-
     ]
   },
   {
     path: '/seekerhome',
     name: 'seekerhome',
-    component: ()=>import ('@/views/seeker/home.vue'),
+    component: ()=>import ('@/layout/index.vue'),
     meta:{
       title:'项目管理',
       hidden: false,

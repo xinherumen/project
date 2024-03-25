@@ -21,8 +21,7 @@
         </div>
         <!-- 内容展示区域 -->
         <div class="layout_main" :class="{ fold: LayOutSettingStore.fold ? true : false }" >
-            <!-- <Main></Main> -->
-            <router-view></router-view>
+            <Main></Main>
         </div>
     </div>
 </template>
