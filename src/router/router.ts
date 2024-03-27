@@ -43,25 +43,25 @@ export const constantRouter=[
     },
     children:[
     {
-      path: '/sed',
-      name: 'seek',
-      component: ()=>import ('@/views/HomeView.vue'),
+      path: '/seach',
+      name: 'seach',
+      component: ()=>import ('@/views/seeker/search.vue'),
       meta:{
-        title:'人员管理',
+        title:'岗位搜素',
         hidden: false,
         icon:"Promotion"
       },
     },
-      {
-        path: '/dsd',
-        name: 'seek2',
-        component: ()=>import ('@/views/seeker/test.vue'),
-        meta:{
-          title:'人员',
-          hidden: false,
-          icon:"Promotion"
-        },
-    }
+    //   {
+    //     path: '/dsd',
+    //     name: 'seek2',
+    //     component: ()=>import ('@/views/seeker/test.vue'),
+    //     meta:{
+    //       title:'人员',
+    //       hidden: false,
+    //       icon:"Promotion"
+    //     },
+    // }
     ]
   },
   {
