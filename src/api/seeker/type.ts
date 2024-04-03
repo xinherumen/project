@@ -32,3 +32,32 @@ export interface userInfoReponseData {
     avatar: string
     }
 }
+export interface companydata {
+    code:number,
+    msg: string,
+    data:
+    {
+        jobid:number
+        title: string
+        education:string
+        company:string
+        hiringManager:string
+        salary:string
+        address:string
+    }
+}
+export interface xiangxidata {
+    code:number,
+    msg: string,
+    data:
+    {
+        jobid:number
+        title: string
+        education:string
+        company:string
+        hiringManager:string
+        salary:string
+        address:string
+        description:string
+    }
+}

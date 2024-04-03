@@ -4,4 +4,3 @@ export default {
   logo: '/public/logo1.png', //项目logo设置
   logoHidden: true, //logo组件是否隐藏设置
 }
-0

@@ -3,7 +3,7 @@
        <div class="seachdiv">
         <el-row>
             <el-col :span="3">
-              <el-select v-model="value" 
+              <el-select v-model="city" 
               placeholder="地区" 
               class="selectdiqu"  
               style="width: 100%;"
@@ -22,20 +22,21 @@
             <el-col :span="17">
                 <el-input  class="custom-input"
                 placeholder="职位/公司" 
-                :prefix-icon="Search" />
+                :prefix-icon="Search" 
+                v-model="input"/>
             </el-col>
             <el-col :span="4">
-                <el-button class="seachbutton" type="primary" >搜索</el-button>
+                <el-button class="seachbutton" type="primary" @click="find()" >搜索</el-button>
             </el-col>
         </el-row>
-        <el-select v-model="value" 
-              placeholder="地区" 
+        <el-select v-model="salary" 
+              placeholder="薪资" 
               class="selectdiqu"  
               style="width: 12.5%;"
               popper-class="eloption"
             :popper-append-to-body="true">
     <el-option
-      v-for="item in cities"
+      v-for="item in salarys"
       :key="item.value"
       :label="item.label"
       :value="item.value"
@@ -43,14 +44,14 @@
       <span style="float: left">{{ item.label }}</span>
     </el-option>
   </el-select>
-  <el-select v-model="value" 
-              placeholder="地区" 
+  <el-select v-model="education" 
+              placeholder="学历" 
               class="selectdiqu"  
               style="width: 12.5%;"
               popper-class="eloption"
             :popper-append-to-body="true">
     <el-option
-      v-for="item in cities"
+      v-for="item in educations"
       :key="item.value"
       :label="item.label"
       :value="item.value"
@@ -58,7 +59,7 @@
       <span style="float: left">{{ item.label }}</span>
     </el-option>
   </el-select>
-  <el-select v-model="value" 
+  <el-select v-model="city" 
               placeholder="地区" 
               class="selectdiqu"  
               style="width: 12.5%;"
@@ -76,7 +77,6 @@
        </div>
   <div style="width:100%; top:50px">
       <!-- <el-space direction="vertical" alignment="flex-start" style="width:100%;"> -->
-    <el-button @click="setLoading">Click me to reload</el-button>
     <el-skeleton style="width: 100%" :loading="loading" animated :count="3">
       <template #template>
         <el-skeleton-item variant="image" style="width: 400px; height: 267px" />
@@ -110,22 +110,22 @@
           :key="item.jobid"
           :body-style="{ padding: '0px', marginBottom: '1px' }"
           style="width:100%;"
+          @click= "goto(item)"
         >
         <el-row>
           <el-col :span="12">
-            <img :src="item.imgUrl" class="image" />
           </el-col>
           <el-col :span="12">
             <div style="padding: 14px">
-            <span>{{ item.title }}</span>
-            <span>{{ item.education }}</span>
-            <span>{{ item.company }}</span>
-            <span>{{ item.hiringManager }}</span>
-            <span>{{ item.salary }}</span>
-            <span>{{ item.address }}</span>
+            <span><el-icon><SuitcaseLine /></el-icon>{{ item.title }}</span>
+            <span><el-icon><Reading /></el-icon>{{ item.education }}</span>
+            <span><icon></icon>{{ item.company }}</span>
+            <span><icon></icon>{{ item.hiringManager }}</span>
+            <span><icon></icon>{{ item.salary }}</span>
+            <span><icon></icon>{{ item.address }}</span>
             <div class="bottom card-header">
               <div class="time">{{ currentDate }}</div>
-              <el-button text class="button">详细信息</el-button>
+              <el-button text class="button" >详细信息</el-button>
             </div>
           </div>
           </el-col>
@@ -138,9 +138,12 @@
     </div>
     <div>
       <el-pagination
-      :page-sizes="[10, 20, 30, 40]" 
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="400"
+      v-model="currentPage"
+      background
+      layout="prev, pager, next"
+      :total="totalItems"
+      class="mt-4"
+      @current-change="handleCurrentChange"
     />
     </div>
      </div>
@@ -148,10 +151,67 @@
 <script setup lang="ts">
 import { Search } from '@element-plus/icons-vue';
 import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router';
+import {local,salary1,education1} from '@/utils/select'
+import request from '@/utils/request'
+import type { companydata } from '@/api/seeker/type'
+import { ElNotification } from 'element-plus';
+const loading = ref(true)
+const lists = ref<ListItem[]>([])
+const city = ref(null)
+const cities =local;
+const salary = ref(null)
+const salarys = salary1;
+const education = ref(null)
+const educations = education1;
+const input = ref(null)
+const currentDate = new Date().toDateString()
+const currentPage = ref(1);
+const totalItems = ref(50);
+//获取对应页面数据
+const getpagedata = (url:string)=>{
+  const result: Promise<companydata>= request.get<any,companydata>(url);
+    result.then((response) => {
+    if (response.code == 200) {
+        // 如果返回的 code 是 200，则更新 lists 值
+        //@ts-ignore
+        lists.value = response.data;
+        // 设置 loading 为 false
+        loading.value = false;
+    } else {
+        // 处理其他状态码的情况
+        ElNotification({
+      type:'error',
+      message:response.msg,
+      title: `获取信息失败`
+    });
+    }
+}).catch((error) => {
+    // 处理请求失败的情况
+    console.error('Request failed:', error);
+});
+}
+//处理切换页面事件
+const handleCurrentChange = (page: number) => {
+      // 处理页码变化事件
+      console.log("页码变为:", page)
+      loading.value = true;
+      let url='';
+      if(input.value==null&&education.value==null&&salary.value==null&&city.value==null){
+       url='/seeker/getTopJob'+'?page='+page;
+    }else{
+       url = '/seeker/selectPosition'+'?page='+page+'&salary='+ salary.value +'&adress=' +city.value+'&education='+education.value;
+    };
+    // console.log(url);
+      getpagedata(url);
+      loading.value = true;
+    };
+
+//获取路由器对象
+let $router = useRouter()
 
 interface ListItem {
   jobid:number
-  imgUrl: string
   title: string
   education:string
   company:string
@@ -159,72 +219,36 @@ interface ListItem {
   salary:string
   address:string
 }
-
-const loading = ref(true)
-const lists = ref<ListItem[]>([])
-const currentDate = new Date().toDateString()
-
-const setLoading = () => {
-  loading.value = true
-  setTimeout(() => {
-    loading.value = false
-  }, 2000)
+//点击对应卡片后的跳转
+const goto = (item : ListItem)=>{
+  const jobid =  item.jobid;
+  localStorage.setItem('jobid', jobid.toString());
+  // $router.push('xiangxi');
+  window.open('/xiangxi', '_blank');
 }
-
+//搜索按钮调用
+const find = ()=>{
+  if(input.value==null&&education.value==null&&salary.value==null&&city.value==null){
+    ElNotification({
+      type:'',
+      message:'搜索条件输入不能为空',
+      title: `搜索为空`
+  })
+  const jobid = localStorage.getItem('jobid');
+  console.log(jobid);
+  return;
+}
+//page,salary,adress,education 
+  const url = '/seeker/selectPosition'+'?page=1'+'&salary='+ salary.value +'&adress=' +city.value+'&education='+education.value;
+  getpagedata(url);
+}
 onMounted(() => {
   loading.value = false
-  lists.value = [
-    {
-      jobid:1222,
-      imgUrl:
-        'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-      title: '产品经理',
-      education:'本科',
-      company:'腾讯',
-      hiringManager:'张经理',
-    salary:'10000',
-    address:'杭州'
-    },
-    {
-      jobid:1222,
-      imgUrl:
-        'https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg',
-      title: '产品经理',
-      education:'本科',
-      company:'腾讯',
-      hiringManager:'张经理',
-    salary:'10000',
-    address:'杭州'
-    },
-  ]
+  const page=1;
+  const url='/seeker/getTopJob'+'?page='+page;
+  getpagedata(url);
+  console.log('你好');
 })
-const value = ref('')
-const cities = [
-  {
-    value: 'Beijing',
-    label: 'Beijing',
-  },
-  {
-    value: 'Shanghai',
-    label: 'Shanghai',
-  },
-  {
-    value: 'Nanjing',
-    label: 'Nanjing',
-  },
-  {
-    value: 'Chengdu',
-    label: 'Chengdu',
-  },
-  {
-    value: 'Shenzhen',
-    label: 'Shenzhen',
-  },
-  {
-    value: 'Guangzhou',
-    label: 'Guangzhou',
-  },
-]
 </script>
 <style scoped lang="scss">
 
@@ -232,10 +256,10 @@ const cities = [
     height: 70px;
     border-radius: 10px; /* 将所有角落设置为相同的圆角 */
     width: 80%;
-    position: fixed; /* 设置固定定位 */
-    top: 50px; /* 例如，设置距离页面顶部的距离 */
-    z-index: 999; /* 可选，设置盒子的层级 */
-    background-color: rgb(255, 255, 255);
+    // position: fixed; /* 设置固定定位 */
+    // top: 50px; /* 例如，设置距离页面顶部的距离 */
+    // z-index: 999; /* 可选，设置盒子的层级 */
+    // background-color: rgb(255, 255, 255);
 }
 .seachbutton{
     width: 100%;

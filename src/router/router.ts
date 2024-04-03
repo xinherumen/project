@@ -10,6 +10,16 @@ export const constantRouter=[
     }
   },
   {
+    path: '/xiangxi',
+    name: 'xiangxi',
+    component: ()=>import ('@/views/seeker/jobinfo.vue'),
+    meta:{
+      title:'岗位详细',
+      hidden: true,
+      icon:"Promotion"
+    },
+  },
+  {
     path: '/',
     name: 'layout',
     component: ()=>import ('@/layout/index.vue'),
@@ -37,7 +47,7 @@ export const constantRouter=[
     name: 'seekerhome',
     component: ()=>import ('@/layout/index.vue'),
     meta:{
-      title:'项目管理',
+      title:'岗位管理',
       hidden: false,
       icon:"Promotion"
     },
@@ -47,11 +57,22 @@ export const constantRouter=[
       name: 'seach',
       component: ()=>import ('@/views/seeker/search.vue'),
       meta:{
-        title:'岗位搜素',
+        title:'岗位搜索',
         hidden: false,
         icon:"Promotion"
       },
     },
+      {
+        path: '/collect',
+        name: 'collect',
+        component: ()=>import ('@/views/seeker/jobinfo.vue'),
+        meta:{
+          title:'收藏岗位',
+          hidden: true,
+          icon:"Promotion"
+        },
+    },
+
     //   {
     //     path: '/dsd',
     //     name: 'seek2',

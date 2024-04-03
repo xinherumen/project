@@ -55,7 +55,7 @@ const login= async ()=>{
   loading.value=true;
   try{
     await  useStore.userLogin(loginForm);
-    $router.push('/seekerhome');
+    $router.push('/');
     ElNotification({
       type:'success',
       message:'欢迎回来',

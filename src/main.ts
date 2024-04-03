@@ -11,8 +11,6 @@ import 'virtual:svg-icons-register'
 //@ts-ignore
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import Particles from 'particles.vue3'
-
-
 const app= createApp(App)
 
 app.use(pinia)

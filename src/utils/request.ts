@@ -3,7 +3,8 @@ import { ElMessage } from "element-plus";
 import useUserStore from "@/stores/modules/user";
 //创建axios实例
 let request = axios.create({
-    baseURL: 'http://192.168.124.36:8089',
+    baseURL: '/api',
+    // baseURL: 'http://192.168.124.36:8089',
     timeout: 5000
 })
 //请求拦截器
