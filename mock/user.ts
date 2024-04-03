@@ -146,5 +146,15 @@ export default [
            const returndata = data[0];
             return { code: 200,msg:"成功", data:returndata  }
         },
+    },
+    //收藏
+    {
+        url:'/api/seeker/collection',
+        method:'post',
+        response: ({body}) => {
+            const { jobid } = body;
+            const data = '你好啊'
+            return { code: 200,msg:"成功", data:data  }
+        },
     }
 ]

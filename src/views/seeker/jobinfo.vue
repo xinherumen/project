@@ -7,6 +7,7 @@
     <span>{{joblist.salary}}</span>
     <span>{{joblist.address}}</span>
     <span>{{joblist.description}}</span>
+    <el-button type="primary" @click="select()">收藏</el-button>
     <el-button type="primary" @click="contrast()">点击查看我与此岗位的对比</el-button>
   </div>
   <div v-show="showdraw">
@@ -16,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { xiangxidata } from '@/api/seeker/type'
+import type { xiangxidata,select} from '@/api/seeker/type'
 import request from '@/utils/request'
 import { ElNotification } from 'element-plus';
 import Chart from 'chart.js/auto';
@@ -42,8 +43,7 @@ interface jobitem {
   address:string
   description:string
 }
-const getdata=()=>{
-  let jobid = sessionStorage.getItem('jobid');
+let jobid = sessionStorage.getItem('jobid');
 // 如果sessionStorage中没有jobid，则从localStorage获取
 if (!jobid) {
     jobid = localStorage.getItem('jobid');
@@ -51,6 +51,7 @@ if (!jobid) {
     //@ts-ignore
     sessionStorage.setItem('jobid', jobid);
 }
+const getdata=()=>{
   const url = '/seeker/xiangxi?jobid='+jobid;
   const result: Promise<xiangxidata>= request.get<any,xiangxidata>(url);
     result.then((response) => {
@@ -116,6 +117,34 @@ radarChartCanvas.value.width = 1; // 设置宽度
 const contrast=()=>{
   leidatu();
   showdraw.value=true;
+}
+const select=()=>{
+  const url = '/seeker/collection';
+  const data={
+    jobid:jobid
+  }
+  const result: Promise<select>= request.post<any,select>(url,data);
+    result.then((response) => {
+    if (response.code == 200) {
+        // 如果返回的 code 是 200，则更新 lists 值
+        ElNotification({
+      type:'success',
+      message:response.msg,
+      title: `收藏成功`
+    });
+        // 设置 loading 为 false
+    } else {
+        // 处理其他状态码的情况
+        ElNotification({
+      type:'error',
+      message:response.msg,
+      title: `获取信息失败`
+    });
+    }
+}).catch((error) => {
+    // 处理请求失败的情况
+    console.error('Request failed:', error);
+});
 }
 onMounted (()=>{
  getdata();

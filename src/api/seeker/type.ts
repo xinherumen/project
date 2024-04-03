@@ -61,3 +61,9 @@ export interface xiangxidata {
         description:string
     }
 }
+//收藏返回数据
+export interface select{
+    code:number,
+    msg:string,
+    data:string
+}
