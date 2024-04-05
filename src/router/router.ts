@@ -43,8 +43,8 @@ export const constantRouter=[
     ]
   },
   {
-    path: '/seekerhome',
-    name: 'seekerhome',
+    path: '/job',
+    name: 'job',
     component: ()=>import ('@/layout/index.vue'),
     meta:{
       title:'岗位管理',
@@ -65,24 +65,45 @@ export const constantRouter=[
       {
         path: '/collect',
         name: 'collect',
-        component: ()=>import ('@/views/seeker/jobinfo.vue'),
+        component: ()=>import ('@/views/seeker/collect.vue'),
         meta:{
           title:'收藏岗位',
-          hidden: true,
+          hidden: false,
           icon:"Promotion"
         },
     },
-
-    //   {
-    //     path: '/dsd',
-    //     name: 'seek2',
-    //     component: ()=>import ('@/views/seeker/test.vue'),
-    //     meta:{
-    //       title:'人员',
-    //       hidden: false,
-    //       icon:"Promotion"
-    //     },
-    // }
+    ]
+  },
+  {
+    path: '/resume',
+    name: 'resume',
+    component: ()=>import ('@/layout/index.vue'),
+    meta:{
+      title:'简历管理',
+      hidden: false,
+      icon:"Promotion"
+    },
+    children:[
+    {
+      path: '/upload',
+      name: 'upload',
+      component: ()=>import ('@/views/seeker/resume/upload.vue'),
+      meta:{
+        title:'简历上传',
+        hidden: false,
+        icon:"Promotion"
+      },
+    },
+      {
+        path: '/modify',
+        name: 'modify',
+        component: ()=>import ('@/views/seeker/resume/modify.vue'),
+        meta:{
+          title:'简历填写/修改',
+          hidden: false,
+          icon:"Promotion"
+        },
+    },
     ]
   },
   {

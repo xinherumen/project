@@ -74,6 +74,23 @@ function creatxiangxi() {
         },
       ]
 }
+function creatresume() {
+    return[
+        {
+            name: "John",
+            intendedPosition: "Software Engineer",
+            address: "123 Main Street, City, Country",
+            intendedSalary: "2k-3k",
+            education: "本科",
+            projectExperience: "Developed a web application using React.js and Node.js",
+            internshipExperience: "Interned at XYZ Company as a software developer",
+            hobby: "Playing guitar, hiking",
+            selfEvaluation: "Detail-oriented and passionate about software development",
+            skill: "JavaScript, React.js, Node.js, HTML, CSS"
+        },
+       
+      ]
+}
 //对外暴露一个数组:数组里面包含两个接口
 //登录假的接口
 //获取用户信息的假的接口
@@ -156,5 +173,44 @@ export default [
             const data = '你好啊'
             return { code: 200,msg:"成功", data:data  }
         },
-    }
+    },
+    //收藏返回数据
+    {
+        url:'/api/seeker/getCollection',
+        method:'get',
+        response: (request) => {
+            const { page } = request.query;
+            // const { page } = request.params;
+           const returndata = creatgosiList();
+            return { code: 200,msg:"成功", data:returndata  }
+        },
+    },
+    //上传文件
+    {
+        url:'/api/seeker/uploadResume',
+        method:'post',
+        response: ({body}) => {
+            const { file } = body;
+            const data = '你好啊'
+            return { code: 200,msg:"成功", data:data  }
+        },
+    },
+    //上传简历表单：
+     {
+        url:'/api/seeker/fillResume',
+        method:'post',
+        response: ({body}) => {
+            const data = '你好啊'
+            return { code: 200,msg:"成功", data:data  }
+        },
+    },
+    {
+        url:'/api/seeker/getResume',
+        method:'get',
+        response: (request) => {
+            
+           const returndata = creatresume();
+            return { code: 200,msg:"成功", data:returndata  }
+        },
+    },
 ]

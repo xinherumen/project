@@ -19,6 +19,7 @@
     "pinia": "^2.1.7",
     "tsparticles": "^3.3.0",
     "vue": "^3.4.21",
+    "vue-doc-preview": "^0.3.2",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

@@ -67,3 +67,20 @@ export interface select{
     msg:string,
     data:string
 }
+//简历数据返回数据
+export interface resumetype{
+    code:number,
+    msg:string,
+    data:{
+    name: string;
+  intendedPosition: string;
+  address: string;
+  intendedSalary: string;
+  education: string;
+  projectExperience: string;
+  internshipExperience: string;
+  hobby: string;
+  selfEvaluation: string;
+  skill: string;
+    }
+}
