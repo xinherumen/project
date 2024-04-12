@@ -5,6 +5,7 @@ import App from '@/App.vue'
 import router from './router'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
+import Cookies from "js-cookie" ;
 //SVG需要的配置代码
 import 'virtual:svg-icons-register'
 //配置elment-plus国际化
@@ -12,7 +13,7 @@ import 'virtual:svg-icons-register'
 import zhCn from 'element-plus/dist/locale/zh-cn.mjs'
 import Particles from 'particles.vue3'
 const app= createApp(App)
-
+//axios.defaults.withCredentials = true
 app.use(pinia)
 app.use(router)
 app.use(ElementPlus, {

@@ -4,16 +4,17 @@ import useUserStore from "@/stores/modules/user";
 //创建axios实例
 let request = axios.create({
     baseURL: '/api',
-    // baseURL: 'http://192.168.124.36:8089',
+    // baseURL: 'http://192.168.39.36:8089',
     timeout: 5000
 })
 //请求拦截器
 request.interceptors.request.use((config) => {
     //获取用户小仓库，获取token
-    let userStore = useUserStore();
-    if(userStore.token){
-        config.headers.token = userStore.token;
+    let userStore = localStorage.getItem('TOKEN');
+    if(userStore){
+        config.headers.Authorization = "Bearer " + userStore;
     }
+    config.headers['Content-Type'] = 'multipart/form-data';
     return config;
 });
 //响应拦截器

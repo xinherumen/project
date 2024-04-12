@@ -21,42 +21,20 @@
         </div>
       </template>
       <template #default>
-        <div
-        style="display: flex;
-              align-items: center;
-              flex-direction: column;
-              height:800px;
-              width:100%;"
-        >
-        <el-card
-          v-for="item in lists"
-          :key="item.jobid"
-          :body-style="{ padding: '0px', marginBottom: '1px' }"
-          style="width:100%;"
-          @click= "goto(item)"
-        >
-        <el-row>
-          <el-col :span="12">
-          </el-col>
-          <el-col :span="12">
-            <div style="padding: 14px">
-            <span><el-icon><SuitcaseLine /></el-icon>{{ item.title }}</span>
-            <span><el-icon><Reading /></el-icon>{{ item.education }}</span>
-            <span><icon></icon>{{ item.company }}</span>
-            <span><icon></icon>{{ item.hiringManager }}</span>
-            <span><icon></icon>{{ item.salary }}</span>
-            <span><icon></icon>{{ item.address }}</span>
-            <div class="bottom card-header">
-            </div>
-          </div>
-          </el-col>
-        </el-row>
-        </el-card>
-      </div>
+        <div class="job-listings">
+  <el-card v-for="item in lists" :key="item.jobId" class="job-card" :header="item.title">
+    <p><el-icon><OfficeBuilding /></el-icon><span class="label">公司：</span> {{ item.company }}</p>
+    <p><el-icon><Money /></el-icon><span class="label">薪水：</span> {{ item.salary }}</p>
+    <p><el-icon><Reading /></el-icon><span class="label">学历要求：</span> {{ item.education }}</p>
+    <p><el-icon><User /></el-icon><span class="label">HR：</span> {{ item.hiringManager }}</p>
+    <p><el-icon><Location /></el-icon><span class="label">地址：</span> {{ item.address }}</p>
+    <el-link :href="item.link" target="_blank">查看详情</el-link>
+  </el-card>
+</div>
       </template>
     </el-skeleton>
     </div>
-    <div>
+    <div >
       <el-pagination
       v-model="currentPage"
       background
@@ -96,6 +74,7 @@ const getpagedata = (url:string)=>{
         lists.value = response.data;
         // 设置 loading 为 false
         loading.value = false;
+        // totalItems.value = response.data.pageNum;
     } else {
         // 处理其他状态码的情况
         ElNotification({
@@ -114,7 +93,7 @@ const handleCurrentChange = (page: number) => {
       // 处理页码变化事件
       console.log("页码变为:", page)
       loading.value = true;
-      let url='/seeker/getCollection'+'?page='+page;
+      let url='/seeker/getBrowsingHistory'+'?page='+page;
     // console.log(url);
       getpagedata(url);
       loading.value = true;
@@ -124,17 +103,18 @@ const handleCurrentChange = (page: number) => {
 let $router = useRouter()
 
 interface ListItem {
-  jobid:number
+  jobId:number
   title: string
   education:string
   company:string
   hiringManager:string
   salary:string
   address:string
+  link:string
 }
 //点击对应卡片后的跳转
 const goto = (item : ListItem)=>{
-  const jobid =  item.jobid;
+  const jobid =  item.jobId;
   localStorage.setItem('jobid', jobid.toString());
   // $router.push('xiangxi');
   window.open('/xiangxi', '_blank');
@@ -142,10 +122,30 @@ const goto = (item : ListItem)=>{
 onMounted(() => {
   loading.value = false
   const page=1;
-  const url='/seeker/getCollection'+'?page='+page;
+  const url='/seeker/getBrowsingHistory'+'?page='+page;
   getpagedata(url);
 })
   </script>
   <style scoped lang="scss">
-    
+    .job-listings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.job-card {
+  width: calc(50% - 10px); /* Adjust card width as needed */
+  margin-bottom: 20px;
+}
+.label {
+  display: inline-block;
+  width: 80px; /* Adjust width as needed */
+  font-weight: bold;
+}
+.description {
+  margin-left: 80px; /* Same width as the label */
+  display: block;
+  margin: 0;
+  line-height: 1.5; /* 根据需要调整行高 */
+}
   </style>

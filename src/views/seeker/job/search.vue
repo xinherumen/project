@@ -59,21 +59,6 @@
       <span style="float: left">{{ item.label }}</span>
     </el-option>
   </el-select>
-  <el-select v-model="city" 
-              placeholder="地区" 
-              class="selectdiqu"  
-              style="width: 12.5%;"
-              popper-class="eloption"
-            :popper-append-to-body="true">
-    <el-option
-      v-for="item in cities"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value"
-    >
-      <span style="float: left">{{ item.label }}</span>
-    </el-option>
-  </el-select>
        </div>
   <div style="width:100%; top:50px">
       <!-- <el-space direction="vertical" alignment="flex-start" style="width:100%;"> -->
@@ -98,40 +83,16 @@
         </div>
       </template>
       <template #default>
-        <div
-        style="display: flex;
-              align-items: center;
-              flex-direction: column;
-              height:800px;
-              width:100%;"
-        >
-        <el-card
-          v-for="item in lists"
-          :key="item.jobid"
-          :body-style="{ padding: '0px', marginBottom: '1px' }"
-          style="width:100%;"
-          @click= "goto(item)"
-        >
-        <el-row>
-          <el-col :span="12">
-          </el-col>
-          <el-col :span="12">
-            <div style="padding: 14px">
-            <span><el-icon><SuitcaseLine /></el-icon>{{ item.title }}</span>
-            <span><el-icon><Reading /></el-icon>{{ item.education }}</span>
-            <span><icon></icon>{{ item.company }}</span>
-            <span><icon></icon>{{ item.hiringManager }}</span>
-            <span><icon></icon>{{ item.salary }}</span>
-            <span><icon></icon>{{ item.address }}</span>
-            <div class="bottom card-header">
-              <div class="time">{{ currentDate }}</div>
-              <el-button text class="button" >详细信息</el-button>
-            </div>
-          </div>
-          </el-col>
-        </el-row>
-        </el-card>
-      </div>
+        <div class="job-listings">
+  <el-card v-for="item in lists" :key="item.jobId" class="job-card" :header="item.title" @click="goto(item)">
+    <p><el-icon><OfficeBuilding /></el-icon><span class="label">公司：</span> {{ item.company }}</p>
+    <p><el-icon><Money /></el-icon><span class="label">薪水：</span> {{ item.salary }}</p>
+    <p><el-icon><Reading /></el-icon><span class="label">学历要求：</span> {{ item.education }}</p>
+    <p><el-icon><User /></el-icon><span class="label">HR：</span> {{ item.hiringManager }}</p>
+    <p><el-icon><Location /></el-icon><span class="label">地址：</span> {{ item.address }}</p>
+    <el-link :href="item.link" target="_blank">查看详情</el-link>
+  </el-card>
+</div>
       </template>
     </el-skeleton>
   <!-- </el-space> -->
@@ -154,10 +115,11 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router';
 import {local,salary1,education1} from '@/utils/select'
 import request from '@/utils/request'
-import type { companydata } from '@/api/seeker/type'
+import type { JobListResponse } from '@/api/seeker/type'
 import { ElNotification } from 'element-plus';
 const loading = ref(true)
-const lists = ref<ListItem[]>([])
+const lists = ref<ListItem[]>([
+])
 const city = ref(null)
 const cities =local;
 const salary = ref(null)
@@ -170,12 +132,13 @@ const currentPage = ref(1);
 const totalItems = ref(50);
 //获取对应页面数据
 const getpagedata = (url:string)=>{
-  const result: Promise<companydata>= request.get<any,companydata>(url);
+  const result: Promise<JobListResponse>= request.get<any,JobListResponse>(url);
     result.then((response) => {
-    if (response.code == 200) {
+    if (response.code == 100) {
         // 如果返回的 code 是 200，则更新 lists 值
         //@ts-ignore
-        lists.value = response.data;
+        lists.value = response.data.list;
+        totalItems.value=response.data.total;
         // 设置 loading 为 false
         loading.value = false;
     } else {
@@ -198,7 +161,7 @@ const handleCurrentChange = (page: number) => {
       loading.value = true;
       let url='';
       if(input.value==null&&education.value==null&&salary.value==null&&city.value==null){
-       url='/seeker/getTopJob'+'?page='+page;
+       url='/seeker/getTopJob/'+page;
     }else{
        url = '/seeker/selectPosition'+'?page='+page+'&salary='+ salary.value +'&adress=' +city.value+'&education='+education.value;
     };
@@ -211,18 +174,21 @@ const handleCurrentChange = (page: number) => {
 let $router = useRouter()
 
 interface ListItem {
-  jobid:number
+  jobId:number
   title: string
   education:string
   company:string
   hiringManager:string
   salary:string
   address:string
+  link:string
 }
+console.log()
 //点击对应卡片后的跳转
 const goto = (item : ListItem)=>{
-  const jobid =  item.jobid;
-  localStorage.setItem('jobid', jobid.toString());
+  console.log(item.jobId);
+  const jobId =  item.jobId;
+  localStorage.setItem('jobId', jobId.toString());
   // $router.push('xiangxi');
   window.open('/xiangxi', '_blank');
 }
@@ -234,8 +200,8 @@ const find = ()=>{
       message:'搜索条件输入不能为空',
       title: `搜索为空`
   })
-  const jobid = localStorage.getItem('jobid');
-  console.log(jobid);
+  // const jobid = localStorage.getItem('jobid');
+  // console.log(jobid);
   return;
 }
 //page,salary,adress,education 
@@ -245,9 +211,12 @@ const find = ()=>{
 onMounted(() => {
   loading.value = false
   const page=1;
-  const url='/seeker/getTopJob'+'?page='+page;
+  const url='/seeker/getTopJob/'+page;
   getpagedata(url);
   console.log('你好');
+  let token = localStorage.getItem('TOKEN');
+  console.log(token);
+
 })
 </script>
 <style scoped lang="scss">
@@ -282,5 +251,26 @@ onMounted(() => {
 .image{
   width:100px;
   height:100px;
+}
+.job-listings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.job-card {
+  width: calc(50% - 10px); /* Adjust card width as needed */
+  margin-bottom: 20px;
+}
+.label {
+  display: inline-block;
+  width: 80px; /* Adjust width as needed */
+  font-weight: bold;
+}
+.description {
+  margin-left: 80px; /* Same width as the label */
+  display: block;
+  margin: 0;
+  line-height: 1.5; /* 根据需要调整行高 */
 }
   </style>

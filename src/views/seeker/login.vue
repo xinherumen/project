@@ -27,6 +27,20 @@
                     <el-input style="width: 150px;"  placeholder="请输入验证码" maxlength="4" clearable v-model="loginForm.code" />
                     <img class="verifyCodeImg" :src="imgUrl" @click="resetImg">
                 </el-form-item>
+                <el-form-item  >
+                <el-select
+      v-model="value"
+      placeholder="请选择你的角色"
+      style="width: 240px"
+    >
+      <el-option
+        v-for="item in types"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+      />
+    </el-select>
+  </el-form-item>
             <el-button :loading="loading" class="btn" type="primary"  @click="login">登录</el-button>
                 <div style="text-align: right;transform:translate(0,30px);">
                     <el-link type="warning" @click="">没有账号？去注册</el-link>
@@ -41,6 +55,7 @@ import {User,Lock} from '@element-plus/icons-vue'
 import { reactive, ref,onMounted } from 'vue'
 import { ElNotification } from 'element-plus';
 import { getTime } from '@/utils/time';
+import { baseurl } from '@/setting';
 //引入用户相关的小仓库
 import useUserStore from '@/stores/modules/user';
 let useStore =useUserStore();
@@ -49,9 +64,22 @@ let $router = useRouter();
 let loading =ref(false);
 //收集表单数据
 let loginForm =reactive({account:'',password:'',code:''})
-let loginForms =ref()
+let loginForms =ref();
+const value = ref('seeker');
+const types = [
+  {
+    value: 'seeker',
+    label: '求职者',
+  },
+  {
+    value: 'recruiters',
+    label: ' 招聘者',
+  },
+]
 const login= async ()=>{
   await loginForms.value.validate();
+  localStorage.setItem('usertype',value.value);
+  console.log(value.value)
   loading.value=true;
   try{
     await  useStore.userLogin(loginForm);
@@ -83,9 +111,9 @@ const rules = {
   { required: true, message: '验证码不能为空', trigger: 'blur'},
   ]
 }
-let imgUrl=ref("http://192.168.124.36:8089/seeker/code");
+let imgUrl=ref(baseurl+"/seeker/code");
 const resetImg=()=>{
-    imgUrl.value = "http://192.168.124.36:8089/seeker/code?time="+new Date();
+    imgUrl.value = baseurl+"/seeker/code?time="+new Date();
     // loginForm.codeId = useStore.getcodeid();
 }
 const options = {

@@ -4,7 +4,7 @@
       <img :src="userStore.avatar" alt="" class="avatar">
       <div class="bottom">
         <h3 class="title">{{ getTime() }}好呀{{ userStore.username }}</h3>
-        <p class="subtitle">大学生就业平台</p>
+        <p class="subtitle">{{ GET_LOGO().title }}</p>
       </div>
     </div>
   </el-card>
@@ -19,7 +19,16 @@ import { getTime } from '@/utils/time';
 import useUserStore from '@/stores/modules/user';
 //获取存储用户信息的仓库对象
 let userStore = useUserStore();
-
+import { GET_LOGO } from '@/setting';
+import { onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+let $router = useRouter();
+// onMounted(() => {
+//   const token = localStorage.getItem('TOKEN');
+//   if (token == null){
+//     $router.push('/login');
+//   }
+// })
 </script>
 
 <style scoped lang="scss">

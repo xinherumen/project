@@ -28,7 +28,8 @@ import { ElNotification } from 'element-plus';
 import {ref} from 'vue';
 import request from '@/utils/request';
 import type { select,resumetype  } from '@/api/seeker/type'
-const fileList = ref<any[]>([]);
+const fileList = ref([]);
+
 let loading =ref(false);
 
 const beforeUpload = (file: File) => {
@@ -58,11 +59,8 @@ const handleUploadClick = () => {
   loading.value=true;
   const url = '/seeker/uploadResume'
   console.log(fileList.value); 
-  const data =fileList.value[0];
-  console.log(fileList);
-  const fromData = new FormData()
-  fromData.append('file', fileList.value[0])
-  //@ts-ignore
+  const data =fileList.value;
+  console.log(data);
   const result: Promise<select>= request.post<any,select>(url,data);
     result.then((response) => {
     if (response.code == 100) {
