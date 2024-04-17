@@ -16,4 +16,4 @@ export const GET_LOGO = ()=>{
    return logoseeting;
   }
 }
-export const baseurl = 'http://192.168.122.36:8089';
+export const baseurl = 'http://601d9226.r28.cpolar.top';

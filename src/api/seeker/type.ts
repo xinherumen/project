@@ -68,6 +68,14 @@ export interface select{
     msg:string,
     data:string
 }
+export interface select1{
+    code:number,
+    msg:string,
+    data:{
+    text:string,
+    score:number
+    }
+}
 //简历数据返回数据
 export interface resumetype{
     code:number,

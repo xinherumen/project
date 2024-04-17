@@ -27,26 +27,26 @@ export default defineConfig(({command})=>{
       //   watchFiles: true, // 监视文件更改 这样更改mock的时候，不需要重新启动编译
       // }),
     ],
-    server: {
-      port: 5173,
-      open: true,
-      // 配置代理
-      proxy: {
-        // 请求的路径前缀只要是 /testaxios 就会被拦截走这个代理
-        '/api': {
-        /**
-          *  请求的目标资源再经过替换成 /httphwm/getList 后，
-          *  会加上 http://127.0.0.1:9693 这个前缀，
-          *  最后请求的URL为: http://127.0.0.1:9693/httphwm/getList
-          */
-          target: 'http://192.168.122.36:8089',
-          ws: true,
-          changeOrigin: true,
-          // 拦截到的请求路径 testaxios/httphwm/getList，/testaxios会被替换成空
-          rewrite: (path) => path.replace(/^\/api/, ''),
-        },
-      },
-    },
+    // server: {
+    //   port: 5173,
+    //   open: true,
+    //   // 配置代理
+    //   proxy: {
+    //     // 请求的路径前缀只要是 /testaxios 就会被拦截走这个代理
+    //     '/api': {
+    //     /**
+    //       *  请求的目标资源再经过替换成 /httphwm/getList 后，
+    //       *  会加上 http://127.0.0.1:9693 这个前缀，
+    //       *  最后请求的URL为: http://127.0.0.1:9693/httphwm/getList
+    //       */
+    //       target: 'http://192.168.122.36:8089',
+    //       ws: true,
+    //       changeOrigin: true,
+    //       // 拦截到的请求路径 testaxios/httphwm/getList，/testaxios会被替换成空
+    //       rewrite: (path) => path.replace(/^\/api/, ''),
+    //     },
+    //   },
+    // },
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url))

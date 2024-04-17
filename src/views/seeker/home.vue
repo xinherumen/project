@@ -1,7 +1,7 @@
 <template>
   <el-card>
     <div class="box">
-      <img :src="userStore.avatar" alt="" class="avatar">
+      <img :src="imageUrl" alt="" class="avatar">
       <div class="bottom">
         <h3 class="title">{{ getTime() }}好呀{{ userStore.username }}</h3>
         <p class="subtitle">{{ GET_LOGO().title }}</p>
@@ -22,6 +22,8 @@ let userStore = useUserStore();
 import { GET_LOGO } from '@/setting';
 import { onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import { GET_TOKEN } from '@/utils/token';
+import { baseurl } from '@/setting';
 let $router = useRouter();
 // onMounted(() => {
 //   const token = localStorage.getItem('TOKEN');
@@ -29,6 +31,7 @@ let $router = useRouter();
 //     $router.push('/login');
 //   }
 // })
+const imageUrl =  baseurl+'/seeker/getAvatar/'+GET_TOKEN();
 </script>
 
 <style scoped lang="scss">

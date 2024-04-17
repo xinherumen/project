@@ -1,18 +1,18 @@
 <template>
   <div class="job-listings">
-    <el-card  v-for="job in jobList" :key="job.jobId" class="job-card" :header="job.title">
+    <el-card  v-for="job in jobList" :key="job.jobId" class="job-card" :header="job.title" @click="goto(job)">
       <p><el-icon><OfficeBuilding /></el-icon><span class="label">公司：</span> {{ job.company }}</p>
       <p><el-icon><Money /></el-icon><span class="label">薪水：</span> {{ job.salary }}</p>
       <p><el-icon><Reading /></el-icon><span class="label">学历要求：</span> {{ job.education }}</p>
-      <p><el-icon><SuitcaseLine /></el-icon><span class="label">岗位描述：</span>   <span class="description">
+      <!-- <p><el-icon><SuitcaseLine /></el-icon><span class="label">岗位描述：</span>   <span class="description">
           <span v-for="(sentence, index) in splitDescription(job.description)" :key="index">{{ sentence }}<br></span>
-        </span></p>
+        </span></p> -->
       <p><el-icon><User /></el-icon><span class="label">HR：</span> {{ job.hiringManager }}</p>
       <p><el-icon><Location /></el-icon><span class="label">地址：</span> {{ job.address }}</p>
       <el-link :href="job.link" target="_blank">查看详情</el-link>
     </el-card>
   </div>
-  <div>
+  <!-- <div>
       <el-pagination
       v-model="currentPage"
       background
@@ -21,7 +21,7 @@
       class="mt-4"
       @current-change="handleCurrentChange"
     />
-    </div>
+    </div> -->
 </template>
 
 <script lang="ts" setup>
@@ -76,7 +76,13 @@ const handleCurrentChange = (page: number) => {
       getpagedata(url);
     };
 
-
+    const goto = (item : Job)=>{
+  console.log(item.jobId);
+  const jobId =  item.jobId;
+  localStorage.setItem('jobId', jobId.toString());
+  // $router.push('xiangxi');
+  window.open('/xiangxi', '_blank');
+}
 const splitDescription = (description: string): string[] => {
   // 利用正则表达式将描述按照句号、中文冒号以及前面的内容分割成数组
   const regex = /([。：】；])/;
@@ -99,7 +105,7 @@ const splitDescription = (description: string): string[] => {
   return result;
 };
 onMounted(()=>{
-  const url='/seeker/getJob/'+1
+  const url='/seeker/gettestList'
   getpagedata(url);
 })
 </script>

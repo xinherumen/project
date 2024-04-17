@@ -3,9 +3,10 @@ import { ElMessage } from "element-plus";
 import useUserStore from "@/stores/modules/user";
 //创建axios实例
 let request = axios.create({
-    baseURL: '/api',
-    // baseURL: 'http://192.168.39.36:8089',
-    timeout: 5000
+    // baseURL: '/api',
+    // baseURL: 'http://192.168.122.36:8089',
+    baseURL: 'http://601d9226.r28.cpolar.top',
+    timeout: 50000
 })
 //请求拦截器
 request.interceptors.request.use((config) => {
@@ -14,7 +15,6 @@ request.interceptors.request.use((config) => {
     if(userStore){
         config.headers.Authorization = "Bearer " + userStore;
     }
-    config.headers['Content-Type'] = 'multipart/form-data';
     return config;
 });
 //响应拦截器

@@ -2,7 +2,7 @@
     <el-button size="small" icon="Refresh" circle @click="updateRefsh"></el-button>
     <el-button size="small" icon="FullScreen" circle @click="fullScreen"></el-button>
     <!-- <img :src="userStore.avatar" style="width: 24px;height: 24px;margin:0px 10px;border-radius: 50%;"> -->
-    <img src="http://localhost:8089/seeker/getAvatar" style="width: 24px;height: 24px;margin:0px 10px;border-radius: 50%;">
+    <img :src = imageUrl id='image' style="width: 24px;height: 24px;margin:0px 10px;border-radius: 50%;">
     <!-- 下拉菜单 -->
     <el-dropdown>
         <span class="el-dropdown-link">
@@ -27,6 +27,8 @@ import { useRouter, useRoute } from 'vue-router';
 import useUserStore from '@/stores/modules/user';
 //获取骨架的小仓库
 import useLayOutSettingStore from '@/stores/modules/setting';
+import { GET_TOKEN } from '@/utils/token';
+import { baseurl } from '@/setting';
 let layoutSettingStore = useLayOutSettingStore();
 let userStore = useUserStore();
 //获取路由器对象
@@ -39,6 +41,9 @@ let dark = ref<boolean>(false);
 const updateRefsh = () => {
     layoutSettingStore.refsh = !layoutSettingStore.refsh;
 };
+const imageUrl =  baseurl+'/seeker/getAvatar/'+GET_TOKEN();
+// const imageElement = document.getElementById('image') as HTMLImageElement;
+// imageElement.setAttribute('src', imageUrl);
 //全屏按钮点击的回调
 const fullScreen = () => {
     //DOM对象的一个属性:可以用来判断当前是不是全屏模式[全屏:true,不是全屏:false]

@@ -38,11 +38,10 @@
     </el-row>
     <el-row>
       <el-col :span="12" v-show="showdraw">
-        <el-card style="height: 150px;width: 830px">
-          <el-text style="font: italic bold 25px 'Times New Roman'">我与该岗位的匹配度评分：</el-text><br/>
-          <el-text style="font: normal bold 16px 'Fira Sans'"><br/>我的建议是回炉重造</el-text>
+        <el-card style="height: auto;width: 830px">
+          <el-text style="font: italic bold 25px 'Times New Roman'">我与该岗位的匹配度评分：{{score}}</el-text><br/>
           <el-text style="font: italic bold 25px 'Times New Roman'">建议：</el-text>
-          <el-text style="font: normal bold 16px 'Fira Sans'"><br/>我的建议是回炉重造</el-text>
+          <el-text style="font: normal bold 16px 'Fira Sans'"><br/> {{sugest}}</el-text>
         </el-card>
       </el-col>
     </el-row>
@@ -50,7 +49,7 @@
 </template>
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import type { xiangxidata,select} from '@/api/seeker/type'
+import type { xiangxidata,select,select1} from '@/api/seeker/type'
 import request from '@/utils/request'
 import { ElNotification } from 'element-plus';
 import Chart from 'chart.js/auto';
@@ -86,6 +85,9 @@ const joblist = ref<jobitem>({
   description:''
 });
 const collect = ref(false)
+const score = ref();
+const sugest = ref();
+// const jianyi = ref();
 const getcollect=()=>{
   const url = '/seeker/checkCollection/'+jobid;
   const result: Promise<select>= request.get<any,select>(url);
@@ -173,6 +175,27 @@ radarChartCanvas.value.width = 1; // 设置宽度
 }
 const contrast=()=>{
   leidatu();
+  const url = '/seeker/gettestGrade/'+jobid;
+  const result: Promise<select1>= request.get<any,select1>(url);
+    result.then((response) => {
+    if (response.code == 100) {
+        // 如果返回的 code 是 200，则更新 lists 值
+        //@ts-ignore
+        score.value = response.data.score;
+        sugest.value = response.data.text;
+        // 设置 loading 为 false
+    } else {
+        // 处理其他状态码的情况
+        ElNotification({
+      type:'error',
+      message:response.msg,
+      title: `获取信息失败`
+    });
+    }
+}).catch((error) => {
+    // 处理请求失败的情况
+    console.error('Request failed:', error);
+});
   showdraw.value=true;
 }
 const select=()=>{

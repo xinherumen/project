@@ -23,7 +23,7 @@ const useUserStore = defineStore('User', {
       token: GET_TOKEN(), //用户唯一标识token
       //@ts-ignore
       menuRoutes:  GET_ROUTERS(), //仓库存储生成菜单需要数组(路由)
-      username: '用户名',
+      username: '孤独摇滚',
       avatar: '/public/logo.png',
       //存储当前用户是否包含某一个按钮
       // buttons: [],
